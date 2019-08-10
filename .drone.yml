@@ -15,6 +15,7 @@ steps:
     image: golang:1.12
     commands:
       - (cd drone && ../build.sh)
+      - (cd drone && ../tags.sh) > .tags
     environment:
       CGO_ENABLED: 1
       GO111MODULE: on
@@ -26,7 +27,6 @@ steps:
     settings:
       context: drone
       dockerfile: docker/Dockerfile.server.linux.amd64
-      tags: linux-amd64
       password:
         from_secret: docker_password
       repo: garykim/drone-oss
@@ -34,12 +34,15 @@ steps:
     when:
       branch:
         - master
+  - name: set-privacy-image-tags
+    image: alpine:3.10
+    commands:
+      - (cd drone && ../tags.sh -privacy) > .tags
   - name: build-privacy-image
     image: plugins/docker
     settings:
       context: drone
       dockerfile: docker/Dockerfile.server.linux.amd64.privacy
-      tags: linux-amd64-privacy
       password:
         from_secret: docker_password
       repo: garykim/drone-oss
