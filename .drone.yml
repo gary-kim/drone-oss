@@ -35,7 +35,7 @@ steps:
       branch:
         - master
   - name: set-privacy-image-tags
-    image: alpine:3.10
+    image: docker:git
     commands:
       - (cd drone && ../tags.sh -privacy) > .tags
   - name: build-privacy-image
