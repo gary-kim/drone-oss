@@ -8,25 +8,19 @@ platform:
 
 steps:
   - name: clone-drone-repo
-    image: alpine:3.9
+    image: docker:git
     commands:
-      - apk add git
       - git clone --recursive https://github.com/drone/drone.git drone
-
   - name: build-drone-oss
     image: golang:1.12
     commands:
-      - cd drone
-      - "go build -tags oss -ldflags \"-extldflags \\\\\"-static\\\\\"\" -o release/linux/amd64/drone-server github.com/drone/drone/cmd/drone-server"
-      - cd ..
-      - git log -1 --format=%H > memorycommit
+      - (cd drone && ../build.sh)
     environment:
       CGO_ENABLED: 1
       GO111MODULE: on
       GOARCH: amd64
       GOOS: linux
       GOPROXY: direct
-
   - name: build-standard-image
     image: plugins/docker
     settings:
@@ -36,12 +30,10 @@ steps:
       password:
         from_secret: docker_password
       repo: garykim/drone-oss
-      username:
-        from_secret: docker_username
+      username: garykim
     when:
-      event:
-        - push
-
+      branch:
+        - master
   - name: build-privacy-image
     image: plugins/docker
     settings:
@@ -51,8 +43,11 @@ steps:
       password:
         from_secret: docker_password
       repo: garykim/drone-oss
-      username:
-        from_secret: docker_username
+      username: garykim
     when:
-      event:
-        - push
+      branch:
+        - master
+---
+kind: secret
+name: docker_password
+data: sVjfqxHUL/f2dVPy9NH+74mS4vjiP0Q7IJ8vr/zKe1rJeSQ1d5otYGT8E2aHTHinQg==
