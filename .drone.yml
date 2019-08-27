@@ -53,4 +53,4 @@ steps:
 ---
 kind: secret
 name: docker_password
-data: sVjfqxHUL/f2dVPy9NH+74mS4vjiP0Q7IJ8vr/zKe1rJeSQ1d5otYGT8E2aHTHinQg==
+data: KQkS8DdTZoLTslToRuhxsXRxngGTht3U0+QmlaqSygzqbJSy0CZgL1Iv4FGoH0kbLQ==
