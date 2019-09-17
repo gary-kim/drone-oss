@@ -11,7 +11,7 @@ steps:
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
-      - (cd drone && git checkout e8d0805cdeea4f062bcb54283263769760c838e1)
+      - (cd drone && $(cat ../version))
   - name: build-drone-oss
     image: golang:1.12
     commands:
