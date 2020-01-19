@@ -26,7 +26,7 @@ steps:
       GO111MODULE: on
       GOARCH: amd64
       GOOS: linux
-      GOPROXY: direct
+      GOPROXY: https://proxy.golang.org
   - name: build-standard-image
     image: plugins/docker
     settings:
@@ -43,6 +43,48 @@ steps:
         - push
       repo:
         - gary-kim/drone-oss
+---
+kind: pipeline
+name: personal-drone-nolimit
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: clone-drone-repo
+    image: docker:git
+    commands:
+      - git clone --recursive https://github.com/drone/drone.git drone
+      - (cd drone && git checkout $(cat ../version))
+  - name: build-drone-nolimit
+    image: golang:1.13
+    commands:
+      - (cd drone && ../build.sh nolimit)
+      - (cd drone && ../tags.sh) > .tags
+    environment:
+      CGO_ENABLED: 1
+      GO111MODULE: on
+      GOARCH: amd64
+      GOOS: linux
+      GOPROXY: https://proxy.golang.org,direct
+  - name: build-nolimit-image
+    image: plugins/docker
+    settings:
+      context: drone
+      dockerfile: drone/docker/Dockerfile.server.linux.amd64
+      password:
+        from_secret: docker_password
+      repo: garykim/drone-nolimit
+      username: garykim
+    when:
+      branch:
+        - master
+      event:
+        - push
+      repo:
+        - gary-kim/drone-oss
+
 ---
 kind: secret
 name: docker_password
