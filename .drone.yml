@@ -17,7 +17,7 @@ steps:
     commands:
       - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
   - name: build-drone-oss
-    image: golang:1.12
+    image: golang:1.13
     commands:
       - (cd drone && ../build.sh)
       - (cd drone && ../tags.sh) > .tags
@@ -26,7 +26,7 @@ steps:
       GO111MODULE: on
       GOARCH: amd64
       GOOS: linux
-      GOPROXY: https://proxy.golang.org
+      GOPROXY: https://proxy.golang.org,direct
   - name: build-standard-image
     image: plugins/docker
     settings:
