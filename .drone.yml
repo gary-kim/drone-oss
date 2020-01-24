@@ -11,7 +11,7 @@ steps:
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
-      - (cd drone && git checkout $(cat ../version))
+      - (cd drone && git checkout $(cat ../VERSION))
   - name: apply-patch
     image: docker:git
     commands:
@@ -56,7 +56,7 @@ steps:
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
-      - (cd drone && git checkout $(cat ../version))
+      - (cd drone && git checkout $(cat ../VERSION))
   - name: build-drone-nolimit
     image: golang:1.13
     commands:
@@ -84,8 +84,3 @@ steps:
         - push
       repo:
         - gary-kim/drone-oss
-
----
-kind: secret
-name: docker_password
-data: KQkS8DdTZoLTslToRuhxsXRxngGTht3U0+QmlaqSygzqbJSy0CZgL1Iv4FGoH0kbLQ==
