@@ -43,6 +43,14 @@ steps:
         - push
       repo:
         - gary-kim/drone-oss
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
+
 ---
 kind: pipeline
 name: personal-drone-nolimit
@@ -84,3 +92,10 @@ steps:
         - push
       repo:
         - gary-kim/drone-oss
+
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
+    - push
