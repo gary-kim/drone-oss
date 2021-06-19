@@ -1,105 +1,101 @@
 ---
 kind: pipeline
-name: build-and-deploy
+name: Build Drone OSS
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: clone-drone-repo
+
+  - name: Clone drone repo
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
-  - name: apply-patch
-    image: alpine:3.11
-    commands:
-      - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
-  - name: build-drone-oss
+
+  # - name: apply-patch
+  #   image: alpine:3.11
+  #   commands:
+  #     - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
+
+  - name: Compile Drone OSS (--tags 'oss nolimit')
     image: golang:1.14
-    commands:
-      - (cd drone && ../build.sh)
-      - (cd drone && ../tags.sh) > .tags
     environment:
       CGO_ENABLED: 1
       GO111MODULE: on
       GOARCH: amd64
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
-  - name: build-standard-image
+    commands:
+      - (cd drone && ../build.sh "oss nolimit")
+      - (cd drone && ../tags.sh) > .tags
+
+  - name: Docker build & push
     image: plugins/docker
     settings:
+      registry: docker.nexus.diesel.net
+      username:
+        from_secret: nexus_user
+      password:
+        from_secret: nexus_pass
       context: drone
       dockerfile: drone/docker/Dockerfile.server.linux.amd64
-      password:
-        from_secret: docker_password
-      repo: garykim/drone-oss
-      username: garykim
-    when:
-      branch:
-        - master
-      event:
-        - push
-      repo:
-        - gary-kim/drone-oss
+      repo: docker.nexus.diesel.net/drone-oss
 
 trigger:
   branch:
-    - master
+    - development
   event:
-    - pull_request
     - push
 
 ---
 kind: pipeline
-name: personal-drone-nolimit
+name: Build Drone Enterprise (no limits)
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-  - name: clone-drone-repo
+  
+  - name: Clone drone repo
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
-  - name: apply-patch
-    image: alpine:3.11
-    commands:
-      - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
-  - name: build-drone-nolimit
+
+  # - name: apply-patch
+  #   image: alpine:3.11
+  #   commands:
+  #     - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
+
+  - name: Compile Drone Enterprise (--tags 'nolimit')
     image: golang:1.14
-    commands:
-      - (cd drone && ../build.sh nolimit)
-      - (cd drone && ../tags.sh) > .tags
     environment:
       CGO_ENABLED: 1
       GO111MODULE: on
       GOARCH: amd64
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
-  - name: build-nolimit-image
+    commands:
+      - (cd drone && ../build.sh nolimit)
+      - (cd drone && ../tags.sh) > .tags
+
+  - name: Docker build & push
     image: plugins/docker
     settings:
+      registry: docker.nexus.diesel.net
+      username:
+        from_secret: nexus_user
+      password:
+        from_secret: nexus_pass
       context: drone
       dockerfile: drone/docker/Dockerfile.server.linux.amd64
-      password:
-        from_secret: docker_password
-      repo: garykim/drone-nolimit
-      username: garykim
-    when:
-      branch:
-        - master
-      event:
-        - push
-      repo:
-        - gary-kim/drone-oss
+      repo: docker.nexus.diesel.net/drone-nolimit
 
 trigger:
   branch:
-    - master
+    - stable
   event:
-    - pull_request
     - push

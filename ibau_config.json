@@ -1,5 +1,0 @@
-{
-  "upstreamRepoUrl": "https://github.com/drone/drone",
-  "pullRequest": true,
-  "pullRequestNotify": "@gary-kim"
-}
