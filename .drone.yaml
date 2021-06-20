@@ -25,7 +25,7 @@ steps:
     commands:
       - version=''
       - testVersion='test-123'
-      - if [ $DRONE_BRANCH == 'development' ]; then version='-development'; fi
+      - if [ $DRONE_BRANCH = 'development' ]; then version='-development'; fi
       - echo $version
       - echo $testVersion
       # - (cd drone && ../build.sh "oss nolimit")
