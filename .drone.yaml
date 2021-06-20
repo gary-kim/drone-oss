@@ -24,13 +24,11 @@ steps:
       GOPROXY: https://proxy.golang.org,direct
     commands:
       - version=''
-      - testVersion='test-123'
       - if [ $DRONE_BRANCH = 'development' ]; then version='-development'; fi
       - echo $version
-      - echo $testVersion
-      # - (cd drone && ../build.sh "oss nolimit")
-      # - (cd drone && ../tags.sh ) > .tags
-      # - cat .tags
+      - (cd drone && ../build.sh "oss nolimit")
+      - (cd drone && ../tags.sh $version ) > .tags
+      - cat .tags
 
   - name: Docker build & push
     image: plugins/docker
@@ -76,8 +74,11 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
+      - version=''
+      - if [ $DRONE_BRANCH = 'development' ]; then version='-development'; fi
+      - echo $version
       - (cd drone && ../build.sh "oss nolimit")
-      - (cd drone && ../tags.sh) > .tags
+      - (cd drone && ../tags.sh $version ) > .tags
 
   - name: Docker build & push
     image: plugins/docker
