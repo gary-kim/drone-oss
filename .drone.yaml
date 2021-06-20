@@ -26,7 +26,7 @@ steps:
       - version=$DRONE_BRANCH
       - if [ $DRONE_BRANCH == development ]; then version='-development'; fi
       - (cd drone && ../build.sh "oss nolimit")
-      - (cd drone && ../tags.sh) > .tags
+      - (cd drone && ../tags.sh '$$version') > .tags
 
   - name: Docker build & push
     image: plugins/docker
