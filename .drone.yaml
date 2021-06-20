@@ -23,8 +23,8 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - build.sh "oss nolimit"
-      - tags.sh > .tags
+      - ./build.sh "oss nolimit"
+      - ./tags.sh > .tags
 
   - name: Docker build & push
     image: plugins/docker
