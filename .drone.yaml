@@ -14,11 +14,6 @@ steps:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
 
-  # - name: apply-patch
-  #   image: alpine:3.11
-  #   commands:
-  #     - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
-
   - name: Compile Drone OSS (--tags 'oss nolimit')
     image: golang:1.14
     environment:
@@ -64,11 +59,6 @@ steps:
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
-
-  # - name: apply-patch
-  #   image: alpine:3.11
-  #   commands:
-  #     - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
 
   - name: Compile Drone Enterprise (--tags 'nolimit')
     image: golang:1.14
