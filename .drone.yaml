@@ -24,8 +24,10 @@ steps:
       GOPROXY: https://proxy.golang.org,direct
     commands:
       - version=''
+      - testVersion='test-123'
       - if [ $DRONE_BRANCH == 'development' ]; then version='-development'; fi
       - echo $version
+      - echo $testVersion
       # - (cd drone && ../build.sh "oss nolimit")
       # - (cd drone && ../tags.sh ) > .tags
       # - cat .tags
