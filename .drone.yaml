@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: Build Drone OSS (development)
+name: Build Drone OSS
 
 platform:
   os: linux
@@ -26,7 +26,8 @@ steps:
       - version=''
       - if [ $DRONE_BRANCH == 'development' ]; then version='-development'; fi
       - cd drone && ../build.sh "oss nolimit"
-      - cd drone && ../tags.sh $$version > .tags
+      - cd drone && ../tags.sh "$$version" > .tags
+      - cat .tags
 
   - name: Docker build & push
     image: plugins/docker
@@ -49,7 +50,7 @@ trigger:
 
 ---
 kind: pipeline
-name: Build Drone Enterprise (no limits)
+name: Build Drone Enterprise (without limits)
 
 platform:
   os: linux
