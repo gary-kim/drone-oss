@@ -23,11 +23,12 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - version=$DRONE_BRANCH
-      - if [ $DRONE_BRANCH == development ]; then version=-development; fi
-      #- (cd drone && ../build.sh "oss nolimit")
-      - (cd drone && ../tags.sh $version) > .tags
-      - cat .tags
+      - version=''
+      - if [ $DRONE_BRANCH == 'development' ]; then version='-development'; fi
+      - echo $version
+      # - (cd drone && ../build.sh "oss nolimit")
+      # - (cd drone && ../tags.sh ) > .tags
+      # - cat .tags
 
   - name: Docker build & push
     image: plugins/docker
