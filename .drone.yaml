@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: Build Drone OSS
+name: Build Drone OSS (development)
 
 platform:
   os: linux
@@ -14,7 +14,7 @@ steps:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
 
-  - name: Compile Drone OSS (--tags 'oss nolimit')
+  - name: Compile Drone OSS
     image: golang:1.14
     environment:
       CGO_ENABLED: 1
@@ -23,8 +23,10 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - (cd drone && ../build.sh "oss nolimit")
-      - (cd drone && ../tags.sh development) > .tags
+      - version=''
+      - if [ $DRONE_BRANCH == 'development' ]; then version='-development'; fi
+      - cd drone && ../build.sh "oss nolimit"
+      - cd drone && ../tags.sh $$version > .tags
 
   - name: Docker build & push
     image: plugins/docker
@@ -41,6 +43,7 @@ steps:
 trigger:
   branch:
     - development
+    - stable
   event:
     - push
 
@@ -60,7 +63,7 @@ steps:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
 
-  - name: Compile Drone Enterprise (--tags 'nolimit')
+  - name: Compile Drone Enterprise
     image: golang:1.14
     environment:
       CGO_ENABLED: 1
@@ -69,8 +72,8 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - (cd drone && ../build.sh nolimit)
-      - (cd drone && ../tags.sh) > .tags
+      - cd drone && ../build.sh "nolimit"
+      - cd drone && ../tags.sh "-${DRONE_BRANCH}" > .tags
 
   - name: Docker build & push
     image: plugins/docker
@@ -86,6 +89,7 @@ steps:
 
 trigger:
   branch:
+    - development
     - stable
   event:
     - push
