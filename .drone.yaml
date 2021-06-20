@@ -23,6 +23,8 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
+      - version=$DRONE_BRANCH
+      - if [ $DRONE_BRANCH == development ]; then version='-development'; fi
       - (cd drone && ../build.sh "oss nolimit")
       - (cd drone && ../tags.sh) > .tags
 
@@ -59,7 +61,7 @@ steps:
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
-      - cd drone && git checkout $(cat ../VERSION)
+      - (cd drone && git checkout $(cat ../VERSION))
 
   - name: Compile Drone Enterprise
     image: golang:1.14
@@ -70,8 +72,8 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - cd drone && ../build.sh "nolimit"
-      - cd drone && ../tags.sh > .tags
+      - (cd drone && ../build.sh "oss nolimit")
+      - (cd drone && ../tags.sh) > .tags
 
   - name: Docker build & push
     image: plugins/docker
