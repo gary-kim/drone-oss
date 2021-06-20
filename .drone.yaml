@@ -24,7 +24,7 @@ steps:
       GOPROXY: https://proxy.golang.org,direct
     commands:
       - (cd drone && ../build.sh "oss nolimit")
-      - (cd drone && ../tags.sh) > .tags
+      - (cd drone && ../tags.sh development) > .tags
 
   - name: Docker build & push
     image: plugins/docker
