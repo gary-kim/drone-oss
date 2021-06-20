@@ -12,7 +12,7 @@ steps:
     image: docker:git
     commands:
       - git clone --recursive https://github.com/drone/drone.git drone
-      - cd drone && git checkout $(cat ../VERSION)
+      - (cd drone && git checkout $(cat ../VERSION))
 
   - name: Compile Drone OSS
     image: golang:1.14
@@ -23,8 +23,8 @@ steps:
       GOOS: linux
       GOPROXY: https://proxy.golang.org,direct
     commands:
-      - ./build.sh "oss nolimit"
-      - ./tags.sh > .tags
+      - (cd drone && ../build.sh "oss nolimit")
+      - (cd drone && ../tags.sh) > .tags
 
   - name: Docker build & push
     image: plugins/docker
