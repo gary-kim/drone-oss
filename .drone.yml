@@ -13,7 +13,8 @@ steps:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
   - name: apply-patch
-    image: alpine:3.11
+    image: garykim/personal-tools-image:latest
+    pull: always
     commands:
       - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
   - name: build-drone-oss
@@ -66,7 +67,8 @@ steps:
       - git clone --recursive https://github.com/drone/drone.git drone
       - (cd drone && git checkout $(cat ../VERSION))
   - name: apply-patch
-    image: alpine:3.11
+    image: garykim/personal-tools-image:latest
+    pull: always
     commands:
       - patch drone/docker/Dockerfile.server.linux.amd64 < Dockerfile.server.linux.amd64.patch
   - name: build-drone-nolimit
