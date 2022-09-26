@@ -1,10 +1,15 @@
---- drone/docker/Dockerfile.server.linux.amd64	2019-12-31 15:10:00.660637916 +0800
-+++ drone/docker/Dockerfile.server.linux.amd64.1	2019-12-31 15:10:08.971805311 +0800
-@@ -19,6 +19,7 @@
+--- drone/docker/Dockerfile.server.linux.amd64
++++ drone/docker/Dockerfile.server.linux.amd64.1
+@@ -19,9 +19,10 @@ ENV DRONE_SERVER_PORT=:80
  ENV DRONE_SERVER_HOST=localhost
  ENV DRONE_DATADOG_ENABLED=true
  ENV DRONE_DATADOG_ENDPOINT=https://stats.drone.ci/api/v1/series
 +ENV DRONE_AGENTS_DISABLED=true
  
  COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+ COPY --from=alpine /usr/share/zoneinfo /usr/share/zoneinfo
  
+ ADD release/linux/amd64/drone-server /bin/
+-ENTRYPOINT ["/bin/drone-server"]
+\ No newline at end of file
++ENTRYPOINT ["/bin/drone-server"]
